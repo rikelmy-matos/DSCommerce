@@ -82,5 +82,14 @@ public class OrderServiceTests {
 			OrderDTO result = service.findById(existingOrderId);
 		});
 	}
+	
+	@Test
+	public void findByIdShouldThrowsResourceNotFoundExceptionWhenIdDoesNotExist() {
+		
+		Mockito.doNothing().when(authService).validateSelfOrAdmin(any());
+		Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+			OrderDTO result = service.findById(nonExistingOrderId);
+		});
+	}
 
 }
