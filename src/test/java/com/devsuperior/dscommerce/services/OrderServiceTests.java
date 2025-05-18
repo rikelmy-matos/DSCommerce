@@ -17,6 +17,8 @@ import com.devsuperior.dscommerce.dto.OrderDTO;
 import com.devsuperior.dscommerce.entities.Order;
 import com.devsuperior.dscommerce.entities.User;
 import com.devsuperior.dscommerce.repositories.OrderRepository;
+import com.devsuperior.dscommerce.services.exceptions.ForbiddenException;
+import com.devsuperior.dscommerce.services.exceptions.ResourceNotFoundException;
 import com.devsuperior.dscommerce.tests.OrderFactory;
 import com.devsuperior.dscommerce.tests.UserFactory;
 
@@ -70,6 +72,15 @@ public class OrderServiceTests {
 		OrderDTO result = service.findById(existingOrderId);
 		Assertions.assertNotNull(result);
 		Assertions.assertEquals(result.getId(), existingOrderId);
+	}
+	
+	@Test
+	public void findByIdShouldThrowsForbiddenExceptionWhenIdExistsAndOtherClientLogged() {
+		
+		Mockito.doThrow(ForbiddenException.class).when(authService).validateSelfOrAdmin(any());
+		Assertions.assertThrows(ForbiddenException.class, () -> {
+			OrderDTO result = service.findById(existingOrderId);
+		});
 	}
 
 }
