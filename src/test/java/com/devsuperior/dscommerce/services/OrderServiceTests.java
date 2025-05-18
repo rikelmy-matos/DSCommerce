@@ -62,5 +62,14 @@ public class OrderServiceTests {
 		Assertions.assertNotNull(result);
 		Assertions.assertEquals(result.getId(), existingOrderId);
 	}
+	
+	@Test
+	public void findByIdShouldReturnOrderDTOWhenIdExistsAndSelfClientLogged() {
+		
+		Mockito.doNothing().when(authService).validateSelfOrAdmin(any());
+		OrderDTO result = service.findById(existingOrderId);
+		Assertions.assertNotNull(result);
+		Assertions.assertEquals(result.getId(), existingOrderId);
+	}
 
 }
