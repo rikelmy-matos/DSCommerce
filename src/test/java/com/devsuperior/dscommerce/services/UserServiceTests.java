@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.devsuperior.dscommerce.entities.User;
@@ -51,10 +52,16 @@ public class UserServiceTests {
 	public void loadUserByUsernameShouldReturnUserDetailsWhenUserExists() {
 		
 		UserDetails result = service.loadUserByUsername(existingUserName);
-		
 		Assertions.assertNotNull(result);
 		Assertions.assertEquals(result.getUsername(), existingUserName);
+	}
+	
+	@Test
+	public void loadUserByUsernameShouldThrowUsernameNotFoundExceptionWhenUserDoesNotExist() {
 		
+		Assertions.assertThrows(UsernameNotFoundException.class, () -> {
+			service.loadUserByUsername(nonExistingUserName);
+		});
 	}
 	
 
