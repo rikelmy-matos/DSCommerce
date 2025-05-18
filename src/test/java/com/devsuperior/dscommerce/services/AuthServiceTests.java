@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.devsuperior.dscommerce.entities.User;
+import com.devsuperior.dscommerce.services.exceptions.ForbiddenException;
 import com.devsuperior.dscommerce.tests.UserFactory;
 
 @ExtendWith(SpringExtension.class)
@@ -50,6 +51,16 @@ public class AuthServiceTests {
 		Mockito.when(userService.authenticated()).thenReturn(SelfClient);
 		Long userId = SelfClient.getId();
 		Assertions.assertDoesNotThrow(() -> {
+			service.validateSelfOrAdmin(userId);
+		});
+	}
+	
+	@Test
+	public void validateSelfOrAdminShouldThrowsForbiddenExceptionWhenOtherClientLogged() {
+		
+		Mockito.when(userService.authenticated()).thenReturn(SelfClient);
+		Long userId = otherClient.getId();
+		Assertions.assertThrows(ForbiddenException.class, () -> {
 			service.validateSelfOrAdmin(userId);
 		});
 	}
