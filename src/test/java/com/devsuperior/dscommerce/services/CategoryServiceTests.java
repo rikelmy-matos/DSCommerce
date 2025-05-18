@@ -30,7 +30,7 @@ public class CategoryServiceTests {
 	private List<Category> list;
 	
 	@BeforeEach
-	private void setUp() {
+	private void setUp() throws Exception {
 		
 		category = CategoryFactory.createCategory();
 		
