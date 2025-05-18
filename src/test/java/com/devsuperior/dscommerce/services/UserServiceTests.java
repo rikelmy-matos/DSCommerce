@@ -104,5 +104,15 @@ public class UserServiceTests {
 		
 	}
 	
+	@Test
+	public void getMeShouldThrowUsernameNotFoundExceptionWhenUserNotAuthenticated() {
+		UserService spyUserService = Mockito.spy(service);
+		Mockito.doThrow(UsernameNotFoundException.class).when(spyUserService).authenticated();
+		
+		Assertions.assertThrows(UsernameNotFoundException.class, () -> {
+			spyUserService.authenticated();
+		});
+	}
+	
 
 }
