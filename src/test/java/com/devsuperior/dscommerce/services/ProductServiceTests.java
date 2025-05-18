@@ -130,11 +130,20 @@ public class ProductServiceTests {
 	}
 	
 	@Test
-	public void deleteShouldDoNotWhenIdExists() {
+	public void deleteShouldDoNothingWhenIdExists() {
 		
 		Assertions.assertDoesNotThrow(() -> {
 			service.delete(existingProductId);
 		});	
+	}
+	
+	@Test
+	public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExit() {
+		
+		Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+			service.delete(nonExistingProductId);
+		});
+		
 	}
 
 }
