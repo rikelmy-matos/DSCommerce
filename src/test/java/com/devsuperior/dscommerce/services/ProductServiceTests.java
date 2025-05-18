@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -38,6 +39,7 @@ public class ProductServiceTests {
 	
 	private Long existingProductId;
 	private Long nonExistingProductId;
+	private Long dependentProductId;
 	private String productName;
 	private Product product;
 	private ProductDTO productDTO;
@@ -61,6 +63,11 @@ public class ProductServiceTests {
 		Mockito.when(repository.save(any())).thenReturn(product);		
 		Mockito.when(repository.getReferenceById(existingProductId)).thenReturn(product);
 		Mockito.when(repository.getReferenceById(nonExistingProductId)).thenThrow(EntityNotFoundException.class);
+		Mockito.when(repository.existsById(existingProductId)).thenReturn(true);
+		Mockito.when(repository.existsById(dependentProductId)).thenReturn(true);
+		Mockito.when(repository.existsById(nonExistingProductId)).thenReturn(false);
+		Mockito.doNothing().when(repository).deleteById(existingProductId);
+		Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentProductId);
 		
 	}
 	
@@ -120,6 +127,14 @@ public class ProductServiceTests {
 		Assertions.assertThrows(ResourceNotFoundException.class, () -> {
 			service.update(nonExistingProductId, productDTO);
 		});
+	}
+	
+	@Test
+	public void deleteShouldDoNotWhenIdExists() {
+		
+		Assertions.assertDoesNotThrow(() -> {
+			service.delete(existingProductId);
+		});	
 	}
 
 }
