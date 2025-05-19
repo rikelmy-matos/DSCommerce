@@ -129,8 +129,16 @@ public class OrderServiceTests {
 		Mockito.when(userService.authenticated()).thenReturn(admin);
 		OrderDTO result = service.insert(orderDTO);
 		
-		Assertions.assertNotNull(result);
+		Assertions.assertNotNull(result);	
+	}
+	
+	@Test
+	public void insertShouldReturnOrderDTOWhenClientLogged() {
 		
+		Mockito.when(userService.authenticated()).thenReturn(client);
+		OrderDTO result = service.insert(orderDTO);
+		
+		Assertions.assertNotNull(result);	
 	}
 
 }
